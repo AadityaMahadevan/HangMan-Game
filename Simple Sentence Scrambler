@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int b[100];
+
+int main()
+{
+    char s[100];
+    int n,m,i=0;
+    printf("Enter the sentence to be scrambled:\n");
+    gets(s);
+
+    printf("Enter your key: ");
+    scanf("%d",&n);
+
+    encode(s,n);
+
+    printf("Enter the key to unscramble the message: ");
+    scanf("%d",&m);
+
+    while(i<3)
+    {
+        if(n!=m)
+        {
+            printf("\nIncorrect key. %d chance(s) left\n",3-i);
+            scanf("%d",&m);
+        }
+
+        if(n==m)
+        {
+            decode(s,n);
+            break;
+        }
+        i++;
+    }
+
+    if(i==3)
+        printf("Message lost!");
+
+    return 0;
+}
+
+void encode(char s[],int n)
+{
+    int i=0,j,l,d=1;
+
+    l=strlen(s);
+    int pri=strlen(s);
+    while(i<l)
+    {
+        b[i]=-1;
+        i++;
+    }
+    printf("\n");
+
+    for(i=0;i<l;i++)
+    {
+        j=s[i]%pri;
+        if(b[j]==-1)
+        {
+            b[j]=s[i]+n;
+        }
+
+        else
+        {
+            d=1;
+            while(b[j]!=-1)
+            {
+                //j=linear(j,pri);
+                j=quad(j,d,pri);
+                d++;
+            }
+            b[j]=s[i]+n;
+        }
+    }
+
+    printf("The scrambled message is:\n");
+
+    for(i=0;i<l;i++)
+    {
+        printf("%c",b[i]);
+    }
+    printf("\n\n");
+
+}
+
+void decode(char s[],int m)
+{
+    printf("The unscrambled message is:\n");
+
+        int i=0,j,d=1,n;
+        n=strlen(s);
+
+        for(i=0;i<n;i++)
+        {
+            b[i]=b[i]-m;
+        }
+
+        for(i=0;i<n;i++)
+        {
+            j=s[i]%n;
+            if(b[j]==s[i])
+            {
+                printf("%c",b[j]);
+            }
+            else
+            {
+                while(b[j]!=s[i])
+                {
+                    //j=linear(j,n);
+                    j=quad(j,d,n);
+                    d++;
+                }
+
+                printf("%c",b[j]);
+            }
+        }
+        printf("\n");
+}
+
+int quad(int i,int j,int pri)
+{
+    return ((i+j*j)%pri);
+}
+/*int linear(int n,int pri)
+{
+    return (n+1)%pri;
+}*/
